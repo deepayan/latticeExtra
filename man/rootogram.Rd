@@ -137,7 +137,7 @@ panel.rootogram(x, y = table(x),
 
 \author{ Deepayan Sarkar \email{deepayan.sarkar@gmail.com}}
 \seealso{
-  \code{\link{xyplot}}
+  \code{\link[lattice]{xyplot}}
 }
 
 \examples{
