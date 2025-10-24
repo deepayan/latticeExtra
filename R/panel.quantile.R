@@ -39,7 +39,7 @@ panel.quantile <-
     if (sum(ok) < 1) return()
     x <- as.numeric(x)[ok]
     y <- as.numeric(y)[ok]
-    mod <- do.call(method,
+    mod <- do.call(methodFun,
                    c(alist(form, tau = tau, data = list(x = x, y = y)),
                      list(...)))
     xseq <- seq(min(x), max(x), length = n)

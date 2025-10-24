@@ -82,30 +82,38 @@ panel.quantile(x, y, form = y ~ x, method = "rq", ...,
   \code{\link[ggplot2]{stat_quantile}}
 }
 \examples{
-## library("quantreg")
 
-set.seed(1)
-xy <- data.frame(x = runif(100), y = rt(100, df = 5))
-xyplot(y ~ x, xy) +
+## Note: panel.quantile() requires the 'quantreg' package to be
+## installed
+
+xyplot(mag ~ depth, quakes,
+       panel = function(x, y, ...) {
+           panel.xyplot(x, y, ...)
+           panel.quantile(x, y, tau = c(.95, .5, .05))
+       })
+
+## Alternative specification of panel function using layer()
+
+xyplot(data = quakes,
+       mag ~ depth | cut(depth, c(0, 400, 800), labels = c("shallow", "deep")),
+       scales = list(x = "free")) + 
     layer(panel.quantile(x, y, tau = c(.95, .5, .05)))
 
-if (require("splines")) {
-    xyplot(y ~ x, xy) +
-        layer(panel.quantile(y ~ ns(x, 3), tau = 0.9))
+p <- xyplot(mag ~ depth, quakes)
 
-    xyplot(y ~ x, xy) +
-        layer(panel.quantile(y ~ ns(x, 3), tau = 0.9, ci = TRUE))
-}
+if (require("splines", quietly = TRUE))
+    p + layer(panel.quantile(y ~ ns(x, 3), tau = 0.9))
+if (require("splines", quietly = TRUE))
+    p + layer(panel.quantile(y ~ ns(x, 3), tau = 0.9, ci = TRUE))
 
-xyplot(y ~ x, xy) +
-    layer(panel.quantile(x, y, tau = c(.5, .9, .1), superpose = TRUE))
+p + layer(panel.quantile(x, y, tau = c(.5, .9, .1), superpose = TRUE))
 
 update(trellis.last.object(),
        auto.key = list(text = paste(c(50,90,10), "\% quantile"),
                   points = FALSE, lines = TRUE))
 
-xyplot(y ~ x, xy) +
-    layer(panel.quantile(y ~ qss(x, lambda=1), method = "rqss"))
+if (require("quantreg", quietly = TRUE))
+    p + layer(panel.quantile(y ~ qss(x, lambda = 10), method = "rqss"))
 
 }
 \keyword{ dplot }
